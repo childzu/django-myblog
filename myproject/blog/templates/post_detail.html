@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb" class=" mt-2">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Post</a></li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <h1>{{post.title}}</h1><br>
+    <span>{{post.content}}</span><br><br>
+    <small class="text-muted d-block">Post by: {{ post.create_by }}</small>
+    <small class="text-muted d-block">Post at : {{post.create_date}}</small>
+{% endblock %}

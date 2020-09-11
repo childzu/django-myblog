@@ -4,13 +4,32 @@
     <nav aria-label="breadcrumb" class=" mt-2">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Post</a></li>
+            <li class="breadcrumb-item active">Title : <a href="{% url 'post_detail' post.pk %}">{{post.title}}</a></li>
         </ol>
     </nav>
 {% endblock %}
 
 {% block content %}
-    <h1>{{post.title}}</h1><br>
     <span>{{post.content}}</span><br><br>
-    <small class="text-muted d-block">Post by: {{ post.create_by }}</small>
-    <small class="text-muted d-block">Post at : {{post.create_date}}</small>
+    <small class="text-muted d-block">Post by: {{ post.create_by }}, at : {{post.create_date}}</small>
+    
+    <h4 class="mt-4">Comments</h4>
+    {% for comment in comments %}
+        <div class="alert alert-success py-1 mb-1 pl-3" role="alert">
+            <small class="text-muted d-block">{{ comment.email }}</small>
+            <span class="mt-1 pt-1">{{comment.message}}</span>
+        </div>
+    {% empty %}
+        <small class="text-muted d-block">No comment</small>
+    {% endfor %}
+
+    <h5 class="mt-4">Add comment</h5>
+    <div class="col-4 ml-0 pl-0">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% include 'includes/form.html' %}
+            <button type="submit" class="btn btn-success">Comment</button>
+        </form>
+    </div>
+    
 {% endblock %}

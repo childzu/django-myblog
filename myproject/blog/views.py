@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .models import Post
-from .forms import NewPostForm
+from .models import Post, Comment
+from .forms import NewPostForm, NewCommentForm
 
 def home(request):
     posts = Post.objects.all()
@@ -10,7 +10,21 @@ def home(request):
 
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
-    return render(request, 'post_detail.html', {'post': post})
+    user = User.objects.first()  # get the currently logged in user
+    form = NewCommentForm()
+    comments = Comment.objects.all().filter(post=post.pk)
+    if request.method == 'POST':
+        form = NewCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.create_by = user
+            comment.post = post
+            comment.save()
+        
+        comments = Comment.objects.all().filter(post=post.pk)
+        return render(request, 'post_detail.html', {'post': post, 'form': form, 'comments': comments})
+    else:        
+        return render(request, 'post_detail.html', {'post': post, 'form': form, 'comments': comments})
 
 def new_post(request):
     user = User.objects.first()  # get the currently logged in user
